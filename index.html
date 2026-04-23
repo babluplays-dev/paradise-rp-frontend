@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link Wallet — Paradise Roleplay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=JetBrains+Mono:wght@400;500&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg:         #070b10;
+      --surface:    #0d1420;
+      --surface2:   #111c2e;
+      --border:     #1a2a40;
+      --border2:    #243550;
+      --gold:       #c9922a;
+      --gold-light: #e8b84b;
+      --gold-dim:   rgba(201,146,42,0.12);
+      --text:       #dde8f5;
+      --muted:      #5a7a9a;
+      --success:    #3adc7a;
+      --error:      #e85050;
+      --font-title: 'Cinzel', serif;
+      --font-body:  'Outfit', sans-serif;
+      --font-mono:  'JetBrains Mono', monospace;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      overflow-x: hidden;
+    }
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(201,146,42,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201,146,42,0.025) 1px, transparent 1px);
+      background-size: 44px 44px;
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed; top: -250px; left: 50%; transform: translateX(-50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(201,146,42,0.07) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    .container { width: 100%; max-width: 540px; position: relative; z-index: 1; }
+
+    /* HEADER */
+    .header { text-align: center; margin-bottom: 2rem; }
+    .flag-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 0.75rem; margin-bottom: 1.5rem;
+    }
+    .flag-line { height: 1px; flex: 1; max-width: 80px; background: linear-gradient(90deg, transparent, var(--gold)); }
+    .flag-line.r { background: linear-gradient(90deg, var(--gold), transparent); }
+    .flag-badge {
+      display: flex; align-items: center; gap: 0.5rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 3px; padding: 0.4rem 0.9rem;
+    }
+    .pk-flag {
+      width: 28px; height: 18px; display: flex;
+      border-radius: 1px; overflow: hidden; box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+    }
+    .pk-w { width: 28%; background: #f0f0f0; }
+    .pk-g { flex: 1; background: #01411C; display: flex; align-items: center; justify-content: center; font-size: 9px; color: white; letter-spacing: -1px; }
+    .flag-text { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+
+    .emblem-ring {
+      width: 80px; height: 80px; border-radius: 50%;
+      border: 2px solid var(--gold); margin: 0 auto;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--surface); font-size: 2rem;
+      box-shadow: 0 0 30px rgba(201,146,42,0.2);
+      animation: glow 3s ease-in-out infinite;
+    }
+    @keyframes glow {
+      0%,100% { box-shadow: 0 0 20px rgba(201,146,42,0.2); }
+      50%      { box-shadow: 0 0 45px rgba(201,146,42,0.4); }
+    }
+    h1 {
+      font-family: var(--font-title); font-size: clamp(1.7rem,5vw,2.5rem);
+      letter-spacing: 0.06em; color: var(--gold-light); margin-top: 0.8rem;
+      text-shadow: 0 0 30px rgba(201,146,42,0.3);
+    }
+    .server-sub { font-family: var(--font-mono); font-size: 0.62rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--muted); margin-top: 0.3rem; }
+    h2.page-title { font-family: var(--font-title); font-size: 1.15rem; letter-spacing: 0.08em; color: var(--text); margin-top: 0.6rem; }
+    .subtitle { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.6; }
+
+    /* CARD */
+    .card {
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 6px; padding: 2rem; position: relative; overflow: hidden;
+    }
+    .card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), var(--gold-light), var(--gold), transparent);
+    }
+    .card::after {
+      content: ''; position: absolute; top: 8px; right: 8px;
+      width: 18px; height: 18px; border-top: 1px solid var(--gold); border-right: 1px solid var(--gold); opacity: 0.35;
+    }
+    .corner-bl {
+      position: absolute; bottom: 8px; left: 8px;
+      width: 18px; height: 18px; border-bottom: 1px solid var(--gold); border-left: 1px solid var(--gold); opacity: 0.35;
+    }
+
+    /* STEPS */
+    .steps { display: flex; align-items: center; margin-bottom: 2rem; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: 0.35rem; }
+    .step-conn { flex: 1; height: 1px; background: var(--border2); margin-bottom: 1.1rem; transition: background 0.4s; }
+    .step-conn.done { background: var(--gold); }
+    .step-num {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+      background: var(--bg); transition: all 0.3s;
+    }
+    .step.active .step-num { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); box-shadow: 0 0 12px rgba(201,146,42,0.25); }
+    .step.done   .step-num { border-color: var(--gold); background: var(--gold); color: var(--bg); }
+    .step-lbl { font-family: var(--font-mono); font-size: 0.58rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+    .step.active .step-lbl { color: var(--gold-light); }
+    .step.done   .step-lbl { color: var(--gold); }
+
+    /* FORM */
+    .field { margin-bottom: 1.25rem; }
+    label { display: block; font-family: var(--font-mono); font-size: 0.63rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
+    input {
+      width: 100%; background: var(--bg); border: 1px solid var(--border2);
+      border-radius: 4px; padding: 0.8rem 1rem; color: var(--text);
+      font-family: var(--font-mono); font-size: 0.85rem; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,146,42,0.1); }
+    input::placeholder { color: var(--muted); opacity: 0.5; }
+    input:disabled { opacity: 0.35; cursor: not-allowed; }
+    .wallet-box {
+      background: var(--bg); border: 1px solid var(--gold); border-radius: 4px;
+      padding: 0.8rem 1rem; font-family: var(--font-mono); font-size: 0.78rem;
+      color: var(--gold-light); word-break: break-all;
+      box-shadow: 0 0 12px rgba(201,146,42,0.08); display: none;
+    }
+    .wallet-lbl { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; display: none; }
+    .hint { font-family: var(--font-mono); font-size: 0.68rem; color: var(--muted); margin-top: 0.4rem; }
+
+    /* BUTTONS */
+    .btn {
+      width: 100%; padding: 0.9rem 1.5rem; border: none; border-radius: 4px;
+      font-family: var(--font-title); font-size: 1rem; letter-spacing: 0.1em;
+      cursor: pointer; transition: all 0.22s;
+      display: flex; align-items: center; justify-content: center; gap: 0.6rem;
+    }
+    .btn-gold { background: linear-gradient(135deg,#b8811f,#d4a034,#c9922a); color: #080808; box-shadow: 0 4px 20px rgba(201,146,42,0.28); }
+    .btn-gold:hover:not(:disabled) { background: linear-gradient(135deg,#c9922a,#e8b84b,#d4a034); box-shadow: 0 6px 28px rgba(201,146,42,0.45); transform: translateY(-1px); }
+    .btn-gold:disabled { opacity: 0.35; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border2); margin-top: 0.75rem; font-family: var(--font-body); font-size: 0.85rem; }
+    .btn-ghost:hover { border-color: var(--gold); color: var(--gold); }
+
+    .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--muted); font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
+
+    /* STATUS */
+    .status { padding: 0.85rem 1rem; border-radius: 4px; font-family: var(--font-mono); font-size: 0.78rem; line-height: 1.5; margin-top: 1rem; display: none; }
+    .status.error   { background: rgba(232,80,80,0.08);  border: 1px solid rgba(232,80,80,0.25);  color: var(--error);   display: block; }
+    .status.success { background: rgba(58,220,122,0.08); border: 1px solid rgba(58,220,122,0.25); color: var(--success); display: block; }
+    .status.info    { background: var(--gold-dim);        border: 1px solid rgba(201,146,42,0.3);  color: var(--gold-light); display: block; }
+
+    .spinner { width: 16px; height: 16px; border: 2px solid rgba(0,0,0,0.2); border-top-color: #080808; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* SUCCESS */
+    .success-screen { text-align: center; padding: 0.5rem 0; display: none; }
+    .s-icon { font-size: 3.5rem; margin-bottom: 0.75rem; animation: pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275); }
+    @keyframes pop { 0%{transform:scale(0) rotate(-10deg)} 100%{transform:scale(1) rotate(0)} }
+    .success-screen h2 { font-family: var(--font-title); font-size: 1.8rem; letter-spacing: 0.08em; color: var(--gold-light); text-shadow: 0 0 20px rgba(201,146,42,0.4); }
+    .success-screen p  { color: var(--muted); margin-top: 0.6rem; font-size: 0.88rem; line-height: 1.7; }
+    .cmd-list { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 1rem 1.25rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--text); margin-top: 1.25rem; text-align: left; }
+    .cmd-row { display: flex; gap: 1rem; padding: 0.35rem 0; border-bottom: 1px solid var(--border); }
+    .cmd-row:last-child { border-bottom: none; }
+    .cmd-name { color: var(--gold-light); min-width: 130px; }
+    .cmd-desc { color: var(--muted); }
+
+    /* FOOTER */
+    .pills { display: flex; gap: 0.65rem; margin-top: 1.2rem; }
+    .pill { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 0.75rem 0.4rem; text-align: center; }
+    .pill-i { font-size: 1rem; margin-bottom: 0.25rem; }
+    .pill-l { font-size: 0.58rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+    .pill-v { font-size: 0.75rem; font-weight: 500; color: var(--text); margin-top: 0.12rem; }
+    .notice { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: 0.75rem 1rem; font-size: 0.76rem; color: var(--muted); line-height: 1.5; margin-top: 1.1rem; font-family: var(--font-mono); display: flex; gap: 0.6rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+
+    <div class="header">
+      <div class="flag-strip">
+        <div class="flag-line"></div>
+        <div class="flag-badge">
+          <div class="pk-flag">
+            <div class="pk-w"></div>
+            <div class="pk-g">☽ ✦</div>
+          </div>
+          <span class="flag-text">Pakistan</span>
+        </div>
+        <div class="flag-line r"></div>
+      </div>
+      <div class="emblem-ring">🏙️</div>
+      <h1>Paradise Roleplay</h1>
+      <div class="server-sub">Pakistan's Premier FiveM Server</div>
+      <h2 class="page-title">NFT Vehicle Wallet Linking</h2>
+      <p class="subtitle">Connect your crypto wallet to unlock exclusive<br>NFT vehicles in-game.</p>
+    </div>
+
+    <div class="card">
+      <div class="corner-bl"></div>
+
+      <div class="steps">
+        <div class="step active" id="s1"><div class="step-num">1</div><span class="step-lbl">Connect</span></div>
+        <div class="step-conn" id="c1"></div>
+        <div class="step" id="s2"><div class="step-num">2</div><span class="step-lbl">Username</span></div>
+        <div class="step-conn" id="c2"></div>
+        <div class="step" id="s3"><div class="step-num">3</div><span class="step-lbl">Link</span></div>
+      </div>
+
+      <div id="form-section">
+        <div class="field">
+          <label>Your Crypto Wallet</label>
+          <div class="wallet-lbl" id="wLbl">✅ Connected Wallet</div>
+          <div class="wallet-box" id="wBox"></div>
+          <button class="btn btn-gold" id="connectBtn" onclick="connectWallet()">
+            <span id="cSpinner" class="spinner"></span>
+            <span id="cText">🦊 Connect MetaMask</span>
+          </button>
+        </div>
+
+        <div class="divider">then</div>
+
+        <div class="field">
+          <label>Your FiveM Username</label>
+          <input type="text" id="fivemName" placeholder="ExactUsernameInGame" disabled autocomplete="off" spellcheck="false" maxlength="50" />
+          <div class="hint">⚠️ Must match exactly what shows in F8 console</div>
+        </div>
+
+        <button class="btn btn-gold" id="linkBtn" onclick="linkWallet()" disabled>
+          <span id="lSpinner" class="spinner"></span>
+          <span id="lText">Link Wallet to Paradise RP Account</span>
+        </button>
+        <div id="statusMsg" class="status"></div>
+      </div>
+
+      <div class="success-screen" id="successScreen">
+        <div class="s-icon">🎉</div>
+        <h2>Wallet Linked!</h2>
+        <p>Your wallet is now connected to your Paradise Roleplay account.<br>Join the server and use:</p>
+        <div class="cmd-list">
+          <div class="cmd-row"><span class="cmd-name">/nftvehicles</span><span class="cmd-desc">View &amp; spawn your NFT cars</span></div>
+          <div class="cmd-row"><span class="cmd-name">/mycar</span><span class="cmd-desc">Quick shortcut</span></div>
+          <div class="cmd-row"><span class="cmd-name">/refreshnft</span><span class="cmd-desc">Re-check after buying new NFT</span></div>
+        </div>
+        <button class="btn btn-ghost" onclick="resetForm()">Link a Different Account</button>
+      </div>
+    </div>
+
+    <div class="pills">
+      <div class="pill"><div class="pill-i">🔐</div><div class="pill-l">Verified</div><div class="pill-v">Sig proof</div></div>
+      <div class="pill"><div class="pill-i">⛓️</div><div class="pill-l">Blockchain</div><div class="pill-v">Polygon</div></div>
+      <div class="pill"><div class="pill-i">⚡</div><div class="pill-l">Instant</div><div class="pill-v">Live on join</div></div>
+      <div class="pill"><div class="pill-i">🇵🇰</div><div class="pill-l">Origin</div><div class="pill-v">Pakistan</div></div>
+    </div>
+
+    <div class="notice">
+      <span>ℹ️</span>
+      <span>Don't have MetaMask? Install free from <strong style="color:var(--text)">metamask.io</strong> — ask in our Discord for help!</span>
+    </div>
+
+  </div>
+
+  <script>
+    const API_URL     = 'https://paradise-rp-backend-production.up.railway.app';
+    const SERVER_NAME = 'Paradise Roleplay';
+    let wallet = null;
+
+    async function connectWallet() {
+      if (!window.ethereum) { showStatus('error','🦊 MetaMask not found! Install from metamask.io then refresh.'); return; }
+      setBusy('c', true);
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        wallet = accounts[0];
+        document.getElementById('wLbl').style.display = 'block';
+        document.getElementById('wBox').style.display = 'block';
+        document.getElementById('wBox').textContent = wallet;
+        document.getElementById('connectBtn').style.display = 'none';
+        document.getElementById('fivemName').disabled = false;
+        document.getElementById('fivemName').focus();
+        setStep(2);
+        showStatus('info','✅ Wallet connected! Now enter your exact FiveM username below.');
+      } catch(e) {
+        showStatus('error','❌ ' + (e.message || 'Could not connect. Try again.'));
+      } finally { setBusy('c', false); }
+    }
+
+    document.getElementById('fivemName').addEventListener('input', function() {
+      const ok = this.value.trim().length >= 2;
+      document.getElementById('linkBtn').disabled = !ok;
+      setStep(ok ? 3 : 2);
+    });
+
+    async function linkWallet() {
+      const name = document.getElementById('fivemName').value.trim();
+      if (!wallet || name.length < 2) return;
+      setBusy('l', true);
+      document.getElementById('lText').textContent = 'Waiting for signature...';
+      try {
+        const msg = `Link wallet to ${SERVER_NAME} FiveM account: ${name}`;
+        const sig = await window.ethereum.request({ method: 'personal_sign', params: [msg, wallet] });
+        document.getElementById('lText').textContent = 'Linking...';
+        const res = await fetch(`${API_URL}/link-wallet`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fivemName: name, walletAddress: wallet, signature: sig })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          document.getElementById('form-section').style.display = 'none';
+          document.getElementById('successScreen').style.display = 'block';
+          document.getElementById('c1').classList.add('done');
+          document.getElementById('c2').classList.add('done');
+          setStep(3, true);
+        } else {
+          showStatus('error','❌ ' + (data.error || 'Linking failed. Ask in Discord.'));
+        }
+      } catch(e) {
+        showStatus('error', e.code === 4001 ? '❌ Signature rejected. Must sign to verify ownership.' : '❌ ' + (e.message || 'Error occurred.'));
+      } finally {
+        setBusy('l', false);
+        document.getElementById('lText').textContent = 'Link Wallet to Paradise RP Account';
+      }
+    }
+
+    function showStatus(type, msg) {
+      const el = document.getElementById('statusMsg');
+      el.className = 'status ' + type;
+      el.textContent = msg;
+    }
+
+    function setBusy(which, on) {
+      if (which === 'c') {
+        document.getElementById('connectBtn').disabled = on;
+        document.getElementById('cSpinner').style.display = on ? 'block' : 'none';
+        document.getElementById('cText').textContent = on ? 'Connecting...' : '🦊 Connect MetaMask';
+      } else {
+        document.getElementById('linkBtn').disabled = on;
+        document.getElementById('lSpinner').style.display = on ? 'block' : 'none';
+      }
+    }
+
+    function setStep(n, allDone = false) {
+      for (let i = 1; i <= 3; i++) {
+        const el = document.getElementById('s' + i);
+        el.classList.remove('active','done');
+        if (allDone || i < n) el.classList.add('done');
+        else if (i === n)     el.classList.add('active');
+      }
+    }
+
+    function resetForm() {
+      wallet = null;
+      document.getElementById('form-section').style.display = 'block';
+      document.getElementById('successScreen').style.display = 'none';
+      document.getElementById('wLbl').style.display = 'none';
+      document.getElementById('wBox').style.display = 'none';
+      document.getElementById('connectBtn').style.display = 'flex';
+      document.getElementById('fivemName').value = '';
+      document.getElementById('fivemName').disabled = true;
+      document.getElementById('linkBtn').disabled = true;
+      document.getElementById('statusMsg').className = 'status';
+      document.getElementById('c1').classList.remove('done');
+      document.getElementById('c2').classList.remove('done');
+      setStep(1);
+    }
+
+    window.addEventListener('load', async () => {
+      if (window.ethereum) {
+        try {
+          const accounts = await window.ethereum.request({ method: 'eth_accounts' });
+          if (accounts.length > 0) {
+            wallet = accounts[0];
+            document.getElementById('wLbl').style.display = 'block';
+            document.getElementById('wBox').style.display = 'block';
+            document.getElementById('wBox').textContent = wallet;
+            document.getElementById('connectBtn').style.display = 'none';
+            document.getElementById('fivemName').disabled = false;
+            setStep(2);
+          }
+        } catch(e) {}
+      }
+    });
+  </script>
+</body>
+</html>
