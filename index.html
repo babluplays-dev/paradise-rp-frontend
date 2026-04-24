@@ -3,35 +3,29 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Paradise Roleplay</title>
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <title>Paradise Roleplay — Wallet & PRC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
   <style>
     :root {
-      --bg:        #020305;
-      --bg2:       #050810;
-      --surface:   #080c18;
-      --surface2:  #0c1220;
-      --neon:      #FFE000;
-      --neon2:     #FFB300;
-      --neon3:     #FFF176;
-      --neon-dim:  rgba(255,224,0,0.08);
-      --neon-glow: rgba(255,224,0,0.4);
-      --cyan:      #00FFFF;
-      --cyan-dim:  rgba(0,255,255,0.06);
-      --red:       #FF3B3B;
-      --green:     #00FF88;
-      --text:      #E8EDF5;
-      --muted:     #3a4a6a;
-      --border:    rgba(255,224,0,0.08);
-      --border2:   rgba(255,224,0,0.2);
-      --font-hud:  'Orbitron', sans-serif;
-      --font-body: 'Rajdhani', sans-serif;
-      --font-mono: 'Share Tech Mono', monospace;
+      --bg:       #0a0800;
+      --surface:  #110f00;
+      --surface2: #1a1600;
+      --border:   #2a2400;
+      --border2:  #3a3200;
+      --y1:       #FFD700;
+      --y2:       #FFA500;
+      --y3:       #FFEC4F;
+      --ydim:     rgba(255,215,0,0.1);
+      --text:     #FFF8DC;
+      --muted:    #7a6a30;
+      --green:    #39e075;
+      --red:      #ff5555;
+      --font-hero: 'Bebas Neue', sans-serif;
+      --font-body: 'Syne', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
@@ -39,906 +33,477 @@
       font-family: var(--font-body);
       min-height: 100vh;
       overflow-x: hidden;
-      cursor: default;
     }
 
-    /* Scanlines */
+    /* Grid background */
     body::before {
       content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.03) 2px,
-        rgba(0,0,0,0.03) 4px
-      );
-    }
-
-    /* Animated grid */
-    .grid-bg {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      position: fixed; inset: 0;
       background-image:
-        linear-gradient(rgba(255,224,0,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,224,0,0.025) 1px, transparent 1px);
-      background-size: 60px 60px;
-      animation: gridDrift 20s linear infinite;
+        linear-gradient(rgba(255,215,0,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,215,0,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      pointer-events: none; z-index: 0;
     }
 
-    @keyframes gridDrift {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(60px); }
+    /* Top glow */
+    body::after {
+      content: '';
+      position: fixed; top: -300px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 600px;
+      background: radial-gradient(ellipse, rgba(255,215,0,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
     }
 
-    /* Central glow orb */
-    .orb {
-      position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-      width: 1000px; height: 700px; pointer-events: none; z-index: 0;
-      background: radial-gradient(ellipse at 50% 30%,
-        rgba(255,224,0,0.06) 0%,
-        rgba(255,179,0,0.03) 30%,
-        transparent 70%
-      );
-    }
-
-    /* Corner decorations */
-    .corner {
-      position: fixed; width: 80px; height: 80px; pointer-events: none; z-index: 0;
-    }
-    .corner::before, .corner::after { content: ''; position: absolute; background: var(--neon); opacity: 0.3; }
-    .corner::before { width: 2px; height: 40px; }
-    .corner::after  { width: 40px; height: 2px; }
-    .corner.tl { top: 20px; left: 20px; }
-    .corner.tl::before { top: 0; left: 0; }
-    .corner.tl::after  { top: 0; left: 0; }
-    .corner.tr { top: 20px; right: 20px; }
-    .corner.tr::before { top: 0; right: 0; }
-    .corner.tr::after  { top: 0; right: 0; }
-    .corner.bl { bottom: 20px; left: 20px; }
-    .corner.bl::before { bottom: 0; left: 0; }
-    .corner.bl::after  { bottom: 0; left: 0; }
-    .corner.br { bottom: 20px; right: 20px; }
-    .corner.br::before { bottom: 0; right: 0; }
-    .corner.br::after  { bottom: 0; right: 0; }
-
-    /* ══════════════ LAYOUT ══════════════ */
-    .page {
+    /* ── HERO HEADER ─────────────────────────── */
+    .hero {
       position: relative; z-index: 1;
-      max-width: 600px; margin: 0 auto;
-      padding: 3rem 1.25rem 4rem;
+      text-align: center;
+      padding: 3rem 1rem 2rem;
+      border-bottom: 1px solid var(--border2);
     }
 
-    /* ══════════════ HERO ══════════════ */
-    .hero { text-align: center; margin-bottom: 3rem; }
-
-    .hero-badge {
-      display: inline-flex; align-items: center; gap: .5rem;
-      border: 1px solid var(--border2);
-      background: var(--neon-dim);
-      padding: .35rem 1rem;
-      border-radius: 2px;
-      margin-bottom: 1.75rem;
-      animation: fadeUp .6s ease both;
+    .flag-row {
+      display: flex; align-items: center; justify-content: center;
+      gap: .75rem; margin-bottom: 1.5rem;
     }
-
-    .badge-dot {
-      width: 6px; height: 6px; border-radius: 50%;
-      background: var(--green);
-      box-shadow: 0 0 8px var(--green);
-      animation: blink 2s ease-in-out infinite;
+    .fl { height: 1px; width: 60px; background: linear-gradient(90deg, transparent, var(--y1)); }
+    .fr { background: linear-gradient(90deg, var(--y1), transparent); }
+    .fbadge {
+      display: flex; align-items: center; gap: .5rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 2px; padding: .35rem .85rem;
     }
-    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    .pkf { width: 26px; height: 17px; display: flex; border-radius: 1px; overflow: hidden; }
+    .pkw { width: 28%; background: #f0f0f0; }
+    .pkg { flex: 1; background: #01411C; display: flex; align-items: center; justify-content: center; font-size: 8px; color: white; }
+    .ftxt { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--y1); }
 
-    .badge-text {
-      font-family: var(--font-mono);
-      font-size: .65rem; letter-spacing: .2em;
-      text-transform: uppercase; color: var(--neon);
+    .hero-logo {
+      width: 90px; height: 90px; border-radius: 50%;
+      border: 2px solid var(--y1); margin: 0 auto 1rem;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2.2rem; background: var(--surface);
+      box-shadow: 0 0 40px rgba(255,215,0,0.2);
+      animation: pulse 3s ease-in-out infinite;
     }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 30px rgba(255,215,0,0.15)} 50%{box-shadow:0 0 60px rgba(255,215,0,0.35)} }
 
-    .hero-title {
-      font-family: var(--font-hud);
-      font-size: clamp(2rem, 8vw, 3.8rem);
-      font-weight: 900;
-      letter-spacing: .06em;
+    h1 {
+      font-family: var(--font-hero);
+      font-size: clamp(3rem, 10vw, 6rem);
+      letter-spacing: .08em;
+      background: linear-gradient(135deg, var(--y1), var(--y2), var(--y3));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
       line-height: 1;
-      color: var(--neon);
-      text-shadow:
-        0 0 20px rgba(255,224,0,0.8),
-        0 0 40px rgba(255,224,0,0.4),
-        0 0 80px rgba(255,224,0,0.2);
-      animation: fadeUp .7s .1s ease both;
     }
 
     .hero-sub {
-      display: block;
-      font-family: var(--font-hud);
-      font-size: clamp(.9rem, 3vw, 1.4rem);
-      font-weight: 400;
-      letter-spacing: .3em;
-      color: var(--neon2);
-      text-shadow: 0 0 15px rgba(255,179,0,0.5);
-      margin-top: .4rem;
-      animation: fadeUp .7s .2s ease both;
+      font-family: var(--font-mono); font-size: .62rem;
+      letter-spacing: .3em; text-transform: uppercase;
+      color: var(--muted); margin-top: .4rem;
     }
 
-    .hero-line {
-      width: 100%; height: 1px; margin: 1.75rem 0;
-      background: linear-gradient(90deg, transparent, var(--neon), transparent);
-      opacity: .4;
-      animation: fadeUp .7s .3s ease both;
-    }
-
-    /* Stats bar */
-    .stats-bar {
-      display: flex; gap: 0;
-      border: 1px solid var(--border2);
-      border-radius: 3px; overflow: hidden;
-      animation: fadeUp .7s .4s ease both;
-    }
-
-    .stat-item {
-      flex: 1; padding: .75rem .5rem;
-      text-align: center;
-      border-right: 1px solid var(--border2);
-      position: relative;
-    }
-    .stat-item:last-child { border-right: none; }
-    .stat-item::before {
-      content: ''; position: absolute; inset: 0;
-      background: var(--neon-dim); opacity: 0;
-      transition: opacity .3s;
-    }
-    .stat-item:hover::before { opacity: 1; }
-
-    .stat-val {
-      font-family: var(--font-hud); font-size: 1rem; font-weight: 700;
-      color: var(--neon);
-      text-shadow: 0 0 10px rgba(255,224,0,0.5);
-    }
-    .stat-label {
-      font-family: var(--font-mono); font-size: .55rem;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: var(--muted); margin-top: .2rem;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ══════════════ TABS ══════════════ */
-    .tabs {
-      display: flex; gap: 0; margin-bottom: 1.5rem;
-      border: 1px solid var(--border2); border-radius: 3px; overflow: hidden;
-      animation: fadeUp .7s .5s ease both;
-    }
-
-    .tab-btn {
-      flex: 1; padding: .85rem; border: none;
-      background: transparent; color: var(--muted);
-      font-family: var(--font-hud); font-size: .75rem;
-      font-weight: 600; letter-spacing: .12em;
-      text-transform: uppercase; cursor: pointer;
-      transition: all .25s; position: relative;
+    .hero-tabs {
+      display: flex; gap: 0; margin: 2rem auto 0;
+      max-width: 500px; border: 1px solid var(--border2); border-radius: 4px;
       overflow: hidden;
     }
 
-    .tab-btn::before {
-      content: ''; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 2px; background: var(--neon);
-      transform: scaleX(0); transition: transform .25s;
+    .tab {
+      flex: 1; padding: .75rem; text-align: center;
+      font-family: var(--font-body); font-size: .85rem; font-weight: 600;
+      cursor: pointer; transition: all .2s; color: var(--muted);
+      background: var(--surface); border: none;
+      letter-spacing: .05em;
     }
 
-    .tab-btn.active {
-      background: var(--neon-dim); color: var(--neon);
-      text-shadow: 0 0 10px rgba(255,224,0,0.5);
+    .tab.active {
+      background: var(--y1); color: #000;
     }
-    .tab-btn.active::before { transform: scaleX(1); }
-    .tab-btn:hover:not(.active) { color: var(--text); background: rgba(255,255,255,0.02); }
 
-    /* ══════════════ PANELS ══════════════ */
-    .panel { display: none; animation: panelIn .3s ease; }
+    .tab:hover:not(.active) { color: var(--y1); }
+
+    /* ── MAIN CONTENT ────────────────────────── */
+    .main { max-width: 560px; margin: 0 auto; padding: 2rem 1rem 3rem; position: relative; z-index: 1; }
+
+    /* PANELS */
+    .panel { display: none; }
     .panel.active { display: block; }
-    @keyframes panelIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
 
-    /* ══════════════ CARD ══════════════ */
+    /* ── WALLET LINK PANEL ───────────────────── */
     .card {
-      background: var(--surface);
-      border: 1px solid var(--border2);
-      border-radius: 4px;
-      padding: 1.75rem;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 1.25rem;
+      background: var(--surface); border: 1px solid var(--border2);
+      border-radius: 6px; padding: 2rem; position: relative; overflow: hidden;
     }
-
     .card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon), var(--neon3), var(--neon), transparent);
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--y2), var(--y1), var(--y3), transparent);
     }
 
-    /* Corner brackets */
-    .card::after {
-      content: ''; position: absolute;
-      bottom: 8px; right: 8px;
-      width: 16px; height: 16px;
-      border-bottom: 1px solid var(--border2);
-      border-right: 1px solid var(--border2);
-    }
-
-    .card-bracket-tl {
-      position: absolute; top: 8px; left: 8px;
-      width: 16px; height: 16px;
-      border-top: 1px solid var(--border2);
-      border-left: 1px solid var(--border2);
-    }
-
-    .card-title {
-      font-family: var(--font-hud); font-size: .9rem; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--neon); margin-bottom: 1.25rem;
-      display: flex; align-items: center; gap: .6rem;
-    }
-
-    .card-title-line {
-      flex: 1; height: 1px;
-      background: linear-gradient(90deg, var(--border2), transparent);
-    }
-
-    /* ══════════════ STEPS ══════════════ */
-    .steps { display: flex; align-items: center; margin-bottom: 1.75rem; }
-    .step  { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
-
-    .step-conn {
-      flex: 1; height: 1px; background: var(--border);
-      margin-bottom: 1.1rem; transition: background .4s, box-shadow .4s;
-    }
-    .step-conn.done {
-      background: var(--neon);
-      box-shadow: 0 0 8px rgba(255,224,0,0.4);
-    }
-
-    .step-num {
-      width: 32px; height: 32px; border-radius: 50%;
-      border: 1px solid var(--muted);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-mono); font-size: .72rem; color: var(--muted);
+    /* Steps */
+    .steps { display: flex; align-items: center; margin-bottom: 2rem; }
+    .step { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+    .sc { flex: 1; height: 1px; background: var(--border2); margin-bottom: 1rem; transition: background .4s; }
+    .sc.done { background: var(--y1); }
+    .sn {
+      width: 30px; height: 30px; border-radius: 50%;
+      border: 1.5px solid var(--border2); display: flex; align-items: center; justify-content: center;
+      font-family: var(--font-mono); font-size: .7rem; color: var(--muted);
       background: var(--bg); transition: all .3s;
     }
+    .step.active .sn { border-color: var(--y1); color: var(--y1); background: var(--ydim); box-shadow: 0 0 12px rgba(255,215,0,0.2); }
+    .step.done   .sn { border-color: var(--y1); background: var(--y1); color: #000; }
+    .sl { font-family: var(--font-mono); font-size: .58rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+    .step.active .sl { color: var(--y3); }
+    .step.done   .sl { color: var(--y1); }
 
-    .step.active .step-num {
-      border-color: var(--neon); color: var(--neon);
-      background: var(--neon-dim);
-      box-shadow: 0 0 15px rgba(255,224,0,0.25);
-    }
-
-    .step.done .step-num {
-      border-color: var(--neon); background: var(--neon); color: #000;
-      box-shadow: 0 0 15px rgba(255,224,0,0.4);
-    }
-
-    .step-lbl {
-      font-family: var(--font-mono); font-size: .55rem;
-      letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
-    }
-    .step.active .step-lbl { color: var(--neon3); }
-    .step.done   .step-lbl { color: var(--neon); }
-
-    /* ══════════════ FORM ══════════════ */
-    .field { margin-bottom: 1.1rem; }
-
-    .field label {
-      display: block; font-family: var(--font-mono);
-      font-size: .6rem; letter-spacing: .15em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: .45rem;
-    }
-
+    /* Form */
+    .field { margin-bottom: 1.2rem; }
+    label { display: block; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin-bottom: .45rem; }
     input {
-      width: 100%;
-      background: var(--bg2);
-      border: 1px solid var(--border);
-      border-radius: 3px;
-      padding: .78rem 1rem;
-      color: var(--text);
-      font-family: var(--font-mono); font-size: .85rem;
-      outline: none;
+      width: 100%; background: var(--bg); border: 1px solid var(--border2);
+      border-radius: 4px; padding: .78rem 1rem; color: var(--text);
+      font-family: var(--font-mono); font-size: .85rem; outline: none;
       transition: border-color .2s, box-shadow .2s;
-      letter-spacing: .03em;
     }
+    input:focus { border-color: var(--y1); box-shadow: 0 0 0 3px rgba(255,215,0,0.08); }
+    input::placeholder { color: var(--muted); opacity: .5; }
+    input:disabled { opacity: .35; cursor: not-allowed; }
 
-    input:focus {
-      border-color: var(--neon);
-      box-shadow: 0 0 0 2px rgba(255,224,0,0.08), 0 0 15px rgba(255,224,0,0.05);
+    .wbox {
+      background: var(--bg); border: 1px solid var(--y1); border-radius: 4px;
+      padding: .78rem 1rem; font-family: var(--font-mono); font-size: .78rem;
+      color: var(--y3); word-break: break-all; display: none;
+      box-shadow: 0 0 12px rgba(255,215,0,0.08);
     }
+    .wlbl { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .1em; text-transform: uppercase; color: var(--y1); margin-bottom: .3rem; display: none; }
+    .hint { font-family: var(--font-mono); font-size: .65rem; color: var(--muted); margin-top: .35rem; }
 
-    input::placeholder { color: var(--muted); opacity: .6; }
-    input:disabled     { opacity: .3; cursor: not-allowed; }
-
-    .wallet-display {
-      background: var(--bg2); border: 1px solid var(--neon);
-      border-radius: 3px; padding: .78rem 1rem;
-      font-family: var(--font-mono); font-size: .76rem;
-      color: var(--neon3); word-break: break-all;
-      box-shadow: 0 0 12px rgba(255,224,0,0.06), inset 0 0 20px rgba(255,224,0,0.02);
-      display: none;
-    }
-
-    .wallet-label {
-      font-family: var(--font-mono); font-size: .58rem;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--neon); margin-bottom: .3rem; display: none;
-    }
-
-    .input-hint {
-      font-family: var(--font-mono); font-size: .62rem;
-      color: var(--muted); margin-top: .35rem; letter-spacing: .03em;
-    }
-
-    /* ══════════════ BUTTONS ══════════════ */
+    /* Buttons */
     .btn {
-      width: 100%; padding: .9rem 1.5rem; border: none; border-radius: 3px;
-      font-family: var(--font-hud); font-size: .9rem; font-weight: 700;
-      letter-spacing: .15em; text-transform: uppercase;
+      width: 100%; padding: .88rem 1.5rem; border: none; border-radius: 4px;
+      font-family: var(--font-hero); font-size: 1.1rem; letter-spacing: .12em;
       cursor: pointer; transition: all .22s;
-      display: flex; align-items: center; justify-content: center; gap: .6rem;
-      position: relative; overflow: hidden;
+      display: flex; align-items: center; justify-content: center; gap: .5rem;
     }
+    .btn-yellow { background: linear-gradient(135deg,#e6a800,#FFD700,#FFA500); color: #000; box-shadow: 0 4px 20px rgba(255,215,0,0.25); }
+    .btn-yellow:hover:not(:disabled) { background: linear-gradient(135deg,#FFD700,#FFEC4F,#FFD700); box-shadow: 0 6px 30px rgba(255,215,0,0.4); transform: translateY(-1px); }
+    .btn-yellow:disabled { opacity: .35; cursor: not-allowed; transform: none; box-shadow: none; }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border2); margin-top: .7rem; font-family: var(--font-body); font-size: .85rem; letter-spacing: .03em; }
+    .btn-ghost:hover { border-color: var(--y1); color: var(--y1); }
 
-    .btn::after {
-      content: ''; position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
-      pointer-events: none;
-    }
+    .divider { display: flex; align-items: center; gap: .9rem; margin: 1.3rem 0; font-family: var(--font-mono); font-size: .65rem; letter-spacing: .1em; color: var(--muted); }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border2); }
 
-    .btn-neon {
-      background: var(--neon);
-      color: #000;
-      box-shadow: 0 0 20px rgba(255,224,0,0.3), 0 4px 15px rgba(255,224,0,0.2);
-    }
+    .status { padding: .78rem .9rem; border-radius: 4px; font-family: var(--font-mono); font-size: .76rem; line-height: 1.5; margin-top: .9rem; display: none; }
+    .status.error   { background: rgba(255,85,85,.08);  border: 1px solid rgba(255,85,85,.25);  color: var(--red);   display: block; }
+    .status.success { background: rgba(57,224,117,.08); border: 1px solid rgba(57,224,117,.25); color: var(--green); display: block; }
+    .status.info    { background: var(--ydim);           border: 1px solid rgba(255,215,0,.25);  color: var(--y3);    display: block; }
 
-    .btn-neon:hover:not(:disabled) {
-      background: var(--neon3);
-      box-shadow: 0 0 30px rgba(255,224,0,0.5), 0 6px 25px rgba(255,224,0,0.3);
-      transform: translateY(-1px);
-    }
-
-    .btn-neon:active:not(:disabled) { transform: translateY(0); }
-    .btn-neon:disabled { opacity: .3; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    .btn-outline {
-      background: transparent; color: var(--muted);
-      border: 1px solid var(--border); margin-top: .6rem;
-      font-size: .75rem; letter-spacing: .1em;
-    }
-    .btn-outline:hover { border-color: var(--neon); color: var(--neon); }
-
-    .btn-danger {
-      background: transparent; color: var(--red);
-      border: 1px solid rgba(255,59,59,0.3); margin-top: .5rem;
-      font-size: .75rem; letter-spacing: .1em;
-    }
-    .btn-danger:hover { background: rgba(255,59,59,0.08); border-color: var(--red); }
-
-    .divider {
-      display: flex; align-items: center; gap: .9rem;
-      margin: 1.25rem 0;
-      font-family: var(--font-mono); font-size: .62rem;
-      letter-spacing: .12em; color: var(--muted);
-    }
-    .divider::before, .divider::after {
-      content: ''; flex: 1; height: 1px; background: var(--border);
-    }
-
-    /* ══════════════ STATUS ══════════════ */
-    .status {
-      padding: .78rem 1rem; border-radius: 3px;
-      font-family: var(--font-mono); font-size: .76rem;
-      line-height: 1.5; margin-top: .9rem; display: none;
-      letter-spacing: .02em;
-    }
-
-    .status.error {
-      background: rgba(255,59,59,0.06);
-      border: 1px solid rgba(255,59,59,0.25);
-      color: var(--red); display: block;
-    }
-    .status.success {
-      background: rgba(0,255,136,0.06);
-      border: 1px solid rgba(0,255,136,0.25);
-      color: var(--green); display: block;
-    }
-    .status.info {
-      background: var(--neon-dim);
-      border: 1px solid var(--border2);
-      color: var(--neon3); display: block;
-    }
-
-    .spinner {
-      width: 14px; height: 14px;
-      border: 2px solid rgba(0,0,0,0.2);
-      border-top-color: #000;
-      border-radius: 50%;
-      animation: spin .6s linear infinite;
-      display: none; flex-shrink: 0;
-    }
+    .spinner { width: 15px; height: 15px; border: 2px solid rgba(0,0,0,.2); border-top-color: #000; border-radius: 50%; animation: spin .6s linear infinite; display: none; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ══════════════ SUCCESS ══════════════ */
-    .success-screen { text-align: center; padding: .5rem 0; display: none; }
+    /* Success */
+    .ss { text-align: center; padding: .5rem 0; display: none; }
+    .si { font-size: 3.5rem; margin-bottom: .6rem; animation: pop .5s cubic-bezier(.175,.885,.32,1.275); }
+    @keyframes pop { 0%{transform:scale(0)}100%{transform:scale(1)} }
+    .ss h2 { font-family: var(--font-hero); font-size: 2.2rem; letter-spacing: .08em; color: var(--y1); }
+    .ss p  { color: var(--muted); margin-top: .5rem; font-size: .88rem; line-height: 1.7; }
+    .cmds  { background: var(--bg); border: 1px solid var(--border2); border-radius: 4px; padding: 1rem 1.2rem; font-family: var(--font-mono); font-size: .78rem; color: var(--text); margin-top: 1.2rem; text-align: left; }
+    .cr    { display: flex; gap: .9rem; padding: .32rem 0; border-bottom: 1px solid var(--border); }
+    .cr:last-child { border-bottom: none; }
+    .cn    { color: var(--y3); min-width: 130px; }
+    .cd    { color: var(--muted); }
 
-    .success-icon {
-      font-size: 3rem; margin-bottom: .75rem;
-      animation: successPop .6s cubic-bezier(.175,.885,.32,1.275);
-    }
-    @keyframes successPop {
-      0%   { transform: scale(0) rotate(-20deg); }
-      60%  { transform: scale(1.15) rotate(5deg); }
-      100% { transform: scale(1) rotate(0); }
-    }
+    /* ── PRC PANEL ───────────────────────────── */
+    .balance-check { margin-bottom: 1.5rem; }
+    .balance-input-row { display: flex; gap: .75rem; }
+    .balance-input-row input { flex: 1; }
+    .balance-input-row .btn { width: auto; padding: .78rem 1.5rem; font-size: .95rem; flex-shrink: 0; }
 
-    .success-screen h2 {
-      font-family: var(--font-hud); font-size: 1.8rem;
-      font-weight: 900; letter-spacing: .1em;
-      color: var(--neon);
-      text-shadow: 0 0 20px rgba(255,224,0,0.5);
-    }
-
-    .success-screen p {
-      color: var(--muted); margin-top: .5rem;
-      font-size: .9rem; line-height: 1.7; font-family: var(--font-body);
-    }
-
-    .cmd-list {
-      background: var(--bg2); border: 1px solid var(--border2);
-      border-radius: 3px; padding: .9rem 1.1rem;
-      font-family: var(--font-mono); font-size: .78rem;
-      color: var(--text); margin-top: 1.1rem; text-align: left;
-    }
-
-    .cmd-row {
-      display: flex; gap: .9rem; padding: .32rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-    .cmd-row:last-child { border-bottom: none; }
-    .cmd-name { color: var(--neon); min-width: 130px; }
-    .cmd-desc { color: var(--muted); font-size: .72rem; }
-
-    /* Unlink section */
-    .unlink-warning {
-      background: rgba(255,59,59,0.04);
-      border: 1px solid rgba(255,59,59,0.15);
-      border-radius: 3px; padding: .75rem 1rem;
-      font-family: var(--font-mono); font-size: .68rem;
-      color: rgba(255,59,59,0.7); line-height: 1.5;
-      margin-bottom: .9rem;
-    }
-
-    /* ══════════════ PRC PANEL ══════════════ */
-    .balance-checker {
-      display: flex; gap: .75rem; margin-bottom: 1.25rem;
-    }
-    .balance-checker input { flex: 1; }
-    .balance-checker .btn {
-      width: auto; padding: .78rem 1.5rem;
-      font-size: .75rem; flex-shrink: 0;
-    }
-
-    .balance-display {
-      background: var(--surface);
-      border: 1px solid var(--neon);
-      border-radius: 4px; padding: 1.75rem;
-      text-align: center; margin-bottom: 1.25rem;
+    .balance-hero {
+      background: linear-gradient(135deg, var(--surface), var(--surface2));
+      border: 1px solid var(--y1); border-radius: 6px;
+      padding: 1.75rem; text-align: center; margin-bottom: 1.5rem;
       display: none; position: relative; overflow: hidden;
     }
+    .balance-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg,transparent,var(--y2),var(--y1),transparent); }
+    .bal-label { font-family: var(--font-mono); font-size: .6rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: .4rem; }
+    .bal-num { font-family: var(--font-hero); font-size: clamp(2.5rem,8vw,4.5rem); line-height: 1; background: linear-gradient(135deg,var(--y2),var(--y1),var(--y3)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+    .bal-sym { font-family: var(--font-hero); font-size: 1.4rem; color: var(--y2); margin-left: .3rem; }
+    .bal-wallet { font-family: var(--font-mono); font-size: .68rem; color: var(--muted); margin-top: .7rem; background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: .45rem .75rem; display: inline-block; word-break: break-all; }
 
-    .balance-display::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--neon), transparent);
-    }
+    .section-title { font-family: var(--font-hero); font-size: 1.4rem; letter-spacing: .08em; color: var(--y1); margin-bottom: 1rem; display: flex; align-items: center; gap: .5rem; }
 
-    .balance-display::after {
-      content: ''; position: absolute; inset: 0;
-      background: radial-gradient(ellipse at 50% 0%, rgba(255,224,0,0.04) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .bal-label {
-      font-family: var(--font-mono); font-size: .58rem;
-      letter-spacing: .2em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: .4rem;
-    }
-
-    .bal-number {
-      font-family: var(--font-hud); font-size: clamp(3rem, 10vw, 5rem);
-      font-weight: 900; line-height: 1;
-      color: var(--neon);
-      text-shadow: 0 0 30px rgba(255,224,0,0.6), 0 0 60px rgba(255,224,0,0.3);
-    }
-
-    .bal-symbol {
-      font-family: var(--font-hud); font-size: 1.3rem;
-      color: var(--neon2); margin-left: .4rem;
-    }
-
-    .bal-wallet {
-      font-family: var(--font-mono); font-size: .66rem; color: var(--muted);
-      margin-top: .75rem; word-break: break-all;
-      background: var(--bg); border: 1px solid var(--border);
-      border-radius: 2px; padding: .4rem .7rem; display: inline-block;
-    }
-
-    /* Earn/Shop rows */
-    .section-hud {
-      font-family: var(--font-hud); font-size: .85rem; font-weight: 700;
-      letter-spacing: .15em; text-transform: uppercase;
-      color: var(--neon); margin-bottom: .9rem;
-      display: flex; align-items: center; gap: .75rem;
-    }
-    .section-hud::after {
-      content: ''; flex: 1; height: 1px;
-      background: linear-gradient(90deg, var(--border2), transparent);
-    }
-
-    .row-list { margin-bottom: 1.75rem; }
-
-    .data-row {
+    .earn-list, .shop-list { margin-bottom: 1.75rem; }
+    .earn-item {
       display: flex; justify-content: space-between; align-items: center;
-      padding: .65rem .9rem; margin-bottom: .4rem;
+      padding: .7rem .9rem; margin-bottom: .5rem;
       background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 3px; transition: all .2s; cursor: default;
+      border-radius: 4px; transition: border-color .2s;
     }
+    .earn-item:hover { border-color: var(--border2); }
+    .earn-name { font-size: .88rem; font-weight: 600; color: var(--text); }
+    .earn-desc { font-size: .7rem; color: var(--muted); margin-top: .1rem; font-family: var(--font-mono); }
+    .earn-amt  { font-family: var(--font-hero); font-size: 1rem; color: var(--y1); letter-spacing: .05em; white-space: nowrap; margin-left: .75rem; }
 
-    .data-row:hover {
-      border-color: rgba(255,224,0,0.15);
-      background: rgba(255,224,0,0.02);
-      transform: translateX(2px);
+    .shop-item {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: .85rem 1rem; margin-bottom: .5rem;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 4px; transition: border-color .2s;
     }
+    .shop-item:hover { border-color: var(--y2); }
+    .shop-name { font-size: .9rem; font-weight: 600; color: var(--text); }
+    .shop-desc { font-size: .7rem; color: var(--muted); margin-top: .1rem; font-family: var(--font-mono); }
+    .shop-cost { font-family: var(--font-hero); font-size: 1rem; color: var(--y2); text-align: right; white-space: nowrap; margin-left: .75rem; }
+    .shop-prc  { display: block; font-size: .6rem; color: var(--muted); font-family: var(--font-mono); }
 
-    .row-name {
-      font-size: .88rem; font-weight: 600; color: var(--text);
-      font-family: var(--font-body);
-    }
-    .row-sub {
-      font-family: var(--font-mono); font-size: .65rem;
-      color: var(--muted); margin-top: .1rem;
-    }
-    .row-val {
-      font-family: var(--font-hud); font-size: .95rem; font-weight: 700;
-      color: var(--neon); white-space: nowrap; margin-left: 1rem;
-      text-shadow: 0 0 8px rgba(255,224,0,0.3);
-    }
-    .row-val.cost { color: var(--neon2); }
-
-    /* Pack selector */
-    .pack-grid {
-      display: grid; grid-template-columns: repeat(3, 1fr);
-      gap: .6rem; margin-bottom: 1rem;
-    }
-
-    .pack-card {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 3px; padding: .9rem .5rem;
-      text-align: center; cursor: pointer;
-      transition: all .2s; position: relative;
-    }
-
-    .pack-card:hover { border-color: var(--border2); transform: translateY(-2px); }
-
-    .pack-card.selected {
-      border-color: var(--neon);
-      background: var(--neon-dim);
-      box-shadow: 0 0 20px rgba(255,224,0,0.1);
-    }
-
-    .pack-badge {
-      position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
-      background: var(--neon); color: #000;
-      font-family: var(--font-mono); font-size: .5rem;
-      padding: .1rem .4rem; border-radius: 2px; white-space: nowrap;
-    }
-
-    .pack-amount {
-      font-family: var(--font-hud); font-size: 1.15rem; font-weight: 900;
-      color: var(--neon); text-shadow: 0 0 8px rgba(255,224,0,0.3);
-    }
-    .pack-unit {
-      font-family: var(--font-mono); font-size: .55rem;
-      color: var(--muted); margin-top: .1rem;
-    }
-    .pack-price {
-      font-family: var(--font-hud); font-size: .85rem; font-weight: 700;
-      color: var(--neon2); margin-top: .35rem;
-    }
-    .pack-name {
-      font-family: var(--font-mono); font-size: .55rem;
-      color: var(--muted); margin-top: .15rem;
-    }
-
-    /* Commands grid */
-    .cmd-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
-    @media(max-width:420px) { .cmd-grid-2 { grid-template-columns: 1fr; } }
-
-    .cmd-chip {
-      background: var(--bg2); border: 1px solid var(--border);
-      border-radius: 3px; padding: .6rem .8rem;
-      transition: border-color .2s;
-    }
-    .cmd-chip:hover { border-color: var(--border2); }
-    .cmd-chip-name { font-family: var(--font-mono); font-size: .78rem; color: var(--neon3); }
-    .cmd-chip-desc { font-size: .72rem; color: var(--muted); margin-top: .1rem; }
+    .cmd-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+    @media(max-width:480px){.cmd-grid{grid-template-columns:1fr;}}
+    .cmd-box { background: var(--bg); border: 1px solid var(--border); border-radius: 3px; padding: .6rem .8rem; }
+    .cmd-name { font-family: var(--font-mono); font-size: .8rem; color: var(--y3); }
+    .cmd-desc { font-size: .7rem; color: var(--muted); margin-top: .12rem; }
 
     /* Footer */
-    .footer-note {
-      background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 3px; padding: .7rem 1rem;
-      font-family: var(--font-mono); font-size: .68rem;
-      color: var(--muted); line-height: 1.6;
-      display: flex; gap: .6rem; margin-top: 1.25rem;
-    }
+    .footer-notice { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; padding: .75rem 1rem; font-size: .74rem; color: var(--muted); line-height: 1.5; margin-top: 1.25rem; font-family: var(--font-mono); display: flex; gap: .6rem; }
 
-    /* Pills */
-    .pill-row { display: flex; gap: .6rem; margin-top: 1.1rem; }
-    .pill {
-      flex: 1; background: var(--surface); border: 1px solid var(--border);
-      border-radius: 3px; padding: .7rem .4rem; text-align: center;
-      transition: border-color .2s;
-    }
-    .pill:hover { border-color: var(--border2); }
-    .pill-icon { font-size: .95rem; margin-bottom: .2rem; }
-    .pill-label { font-family: var(--font-mono); font-size: .52rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
-    .pill-val   { font-size: .78rem; font-weight: 600; color: var(--text); margin-top: .1rem; }
-
-    /* Owner wallet display */
-    .owner-wallet-box {
-      background: var(--bg); border: 1px solid var(--border2);
-      border-radius: 3px; padding: .65rem .9rem;
-      font-family: var(--font-mono); font-size: .72rem;
-      color: var(--neon3); word-break: break-all;
-      margin-bottom: 1rem;
-      box-shadow: 0 0 10px rgba(255,224,0,0.04);
-    }
-    .owner-wallet-label {
-      font-family: var(--font-mono); font-size: .55rem;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--muted); margin-bottom: .3rem;
-    }
+    /* Info pills */
+    .pills { display: flex; gap: .6rem; margin-top: 1.2rem; }
+    .pill { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: .7rem .4rem; text-align: center; }
+    .pill-i { font-size: 1rem; margin-bottom: .2rem; }
+    .pill-l { font-size: .56rem; font-family: var(--font-mono); text-transform: uppercase; letter-spacing: .07em; color: var(--muted); }
+    .pill-v { font-size: .75rem; font-weight: 600; color: var(--text); margin-top: .1rem; }
   </style>
 </head>
 <body>
 
-  <div class="grid-bg"></div>
-  <div class="orb"></div>
-  <div class="corner tl"></div>
-  <div class="corner tr"></div>
-  <div class="corner bl"></div>
-  <div class="corner br"></div>
-
-  <div class="page">
-
-    <!-- ══ HERO ══ -->
-    <div class="hero">
-      <div class="hero-badge">
-        <div class="badge-dot"></div>
-        <span class="badge-text">Server Online • FiveM • Pakistan</span>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="flag-row">
+      <div class="fl"></div>
+      <div class="fbadge">
+        <div class="pkf"><div class="pkw"></div><div class="pkg">☽✦</div></div>
+        <span class="ftxt">Pakistan</span>
       </div>
-      <h1 class="hero-title">PARADISE<br>ROLEPLAY</h1>
-      <span class="hero-sub">PLAY · EARN · OWN</span>
-      <div class="hero-line"></div>
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-val">PRC</div>
-          <div class="stat-label">Token</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-val">POLYGON</div>
-          <div class="stat-label">Blockchain</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-val">1M</div>
-          <div class="stat-label">Max Supply</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-val" id="liveStatus">LIVE</div>
-          <div class="stat-label">Status</div>
-        </div>
-      </div>
+      <div class="fl fr"></div>
     </div>
+    <div class="hero-logo">🏙️</div>
+    <h1>Paradise Roleplay</h1>
+    <div class="hero-sub">Pakistan's Premier FiveM Server</div>
 
-    <!-- ══ TABS ══ -->
-    <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('wallet')">⬡ Link Wallet</button>
-      <button class="tab-btn" onclick="switchTab('prc')">◈ Paradise Coin</button>
+    <div class="hero-tabs">
+      <button class="tab active" onclick="switchTab('wallet')">🔗 Link Wallet</button>
+      <button class="tab" onclick="switchTab('prc')">💰 Paradise Coin</button>
     </div>
+  </div>
 
-    <!-- ══ WALLET PANEL ══ -->
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ── WALLET LINK PANEL ─────────────────── -->
     <div class="panel active" id="panel-wallet">
 
-      <div id="wStatus" class="status"></div>
+      <div id="wStatusMsg" class="status"></div>
 
       <div class="card">
-        <div class="card-bracket-tl"></div>
 
         <div class="steps">
-          <div class="step active" id="s1"><div class="step-num">01</div><span class="step-lbl">Connect</span></div>
-          <div class="step-conn" id="c1"></div>
-          <div class="step" id="s2"><div class="step-num">02</div><span class="step-lbl">Identity</span></div>
-          <div class="step-conn" id="c2"></div>
-          <div class="step" id="s3"><div class="step-num">03</div><span class="step-lbl">Deploy</span></div>
+          <div class="step active" id="s1"><div class="sn">1</div><span class="sl">Connect</span></div>
+          <div class="sc" id="c1"></div>
+          <div class="step" id="s2"><div class="sn">2</div><span class="sl">Username</span></div>
+          <div class="sc" id="c2"></div>
+          <div class="step" id="s3"><div class="sn">3</div><span class="sl">Link</span></div>
         </div>
 
-        <!-- Form -->
-        <div id="formSection">
+        <div id="form-section">
           <div class="field">
-            <label>Wallet Address</label>
-            <div class="wallet-label" id="wLbl">// WALLET AUTHENTICATED</div>
-            <div class="wallet-display" id="wBox"></div>
-            <button class="btn btn-neon" id="connectBtn" onclick="connectWallet()">
+            <label>Your Crypto Wallet</label>
+            <div class="wlbl" id="wLbl">✅ Connected</div>
+            <div class="wbox" id="wBox"></div>
+            <button class="btn btn-yellow" id="connectBtn" onclick="connectWallet()">
               <span id="cSpinner" class="spinner"></span>
-              <span id="cText">⬡ Connect MetaMask</span>
+              <span id="cText">🦊 Connect MetaMask</span>
             </button>
           </div>
-          <div class="divider">// then //</div>
+          <div class="divider">then</div>
           <div class="field">
-            <label>FiveM Identity</label>
-            <input type="text" id="fivemName" placeholder="Your exact in-game username" disabled autocomplete="off" spellcheck="false" maxlength="50"/>
-            <div class="input-hint">⚠ Must match exactly what shows in F8 console</div>
+            <label>Your FiveM Username</label>
+            <input type="text" id="fivemName" placeholder="ExactUsernameInGame" disabled autocomplete="off" spellcheck="false" maxlength="50"/>
+            <div class="hint">⚠️ Must match exactly what shows in F8 console</div>
           </div>
-          <button class="btn btn-neon" id="linkBtn" onclick="linkWallet()" disabled>
+          <button class="btn btn-yellow" id="linkBtn" onclick="linkWallet()" disabled>
             <span id="lSpinner" class="spinner"></span>
-            <span id="lText">◈ Link Wallet to Paradise RP</span>
+            <span id="lText">Link Wallet to Paradise RP</span>
           </button>
         </div>
 
-        <!-- Success -->
-        <div class="success-screen" id="successScreen">
-          <div class="success-icon">⬡</div>
-          <h2>WALLET LINKED</h2>
-          <p>Your identity is verified on the blockchain.<br>Join the server and use these commands:</p>
-          <div class="cmd-list">
-            <div class="cmd-row"><span class="cmd-name">/prc</span><span class="cmd-desc">Check your PRC balance</span></div>
-            <div class="cmd-row"><span class="cmd-name">/prcshop</span><span class="cmd-desc">Open the PRC shop</span></div>
-            <div class="cmd-row"><span class="cmd-name">/prcbalance</span><span class="cmd-desc">Detailed balance info</span></div>
+        <div class="ss" id="successScreen">
+          <div class="si">🎉</div>
+          <h2>Wallet Linked!</h2>
+          <p>Your wallet is connected to Paradise Roleplay.<br>Join the server and use:</p>
+          <div class="cmds">
+            <div class="cr"><span class="cn">/prc</span><span class="cd">Check your PRC balance</span></div>
+            <div class="cr"><span class="cn">/prcshop</span><span class="cd">Spend PRC on perks</span></div>
+            <div class="cr"><span class="cn">/prcbalance</span><span class="cd">Same as /prc</span></div>
           </div>
-          <button class="btn btn-outline" onclick="resetForm()">Link Different Account</button>
-          <button class="btn btn-danger" onclick="toggleUnlink()">⚠ Unlink Wallet</button>
+          <button class="btn btn-ghost" onclick="resetForm()">Link a Different Account</button>
+          <button class="btn btn-ghost" style="border-color:#ff5555;color:#ff5555;margin-top:.5rem;" onclick="showUnlink()">🔓 Unlink Wallet</button>
         </div>
-
-        <!-- Unlink -->
-        <div id="unlinkSection" style="display:none; margin-top:1rem;">
-          <div class="unlink-warning">
-            ⚠ WARNING: Unlinking will stop PRC rewards in-game. Your token balance remains safe on the blockchain. You can re-link at any time.
+        <div id="unlinkSection" style="display:none;margin-top:1rem;">
+          <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-bottom:.75rem;padding:.75rem;background:rgba(255,85,85,0.05);border:1px solid rgba(255,85,85,0.2);border-radius:4px;">
+            ⚠️ Unlinking stops PRC rewards in-game. Your PRC balance stays safe on blockchain.
           </div>
           <div class="field">
-            <label>Confirm FiveM Identity</label>
+            <label>Confirm Your FiveM Username</label>
             <input type="text" id="unlinkName" placeholder="ExactUsernameInGame" autocomplete="off"/>
           </div>
-          <button id="ulBtn" class="btn btn-danger" style="background:rgba(255,59,59,0.1);width:100%;padding:.88rem;" onclick="unlinkWallet()">
+          <button id="ulBtn" class="btn" style="background:#c0392b;color:#fff;font-family:var(--font-hero);font-size:1rem;letter-spacing:.1em;" onclick="unlinkWallet()">
             <span id="ulSpinner" class="spinner" style="border-top-color:#fff;"></span>
             <span id="ulText">Confirm Unlink</span>
           </button>
           <div id="ulStatus" class="status"></div>
-        </div>
 
       </div>
 
-      <div class="pill-row">
-        <div class="pill"><div class="pill-icon">🔐</div><div class="pill-label">Verified</div><div class="pill-val">Sig proof</div></div>
-        <div class="pill"><div class="pill-icon">⛓</div><div class="pill-label">Chain</div><div class="pill-val">Polygon</div></div>
-        <div class="pill"><div class="pill-icon">⚡</div><div class="pill-label">Speed</div><div class="pill-val">Instant</div></div>
-        <div class="pill"><div class="pill-icon">🔒</div><div class="pill-label">Security</div><div class="pill-val">On-chain</div></div>
+      <div class="pills">
+        <div class="pill"><div class="pill-i">🔐</div><div class="pill-l">Secure</div><div class="pill-v">Sig verified</div></div>
+        <div class="pill"><div class="pill-i">⛓️</div><div class="pill-l">Chain</div><div class="pill-v">Polygon</div></div>
+        <div class="pill"><div class="pill-i">⚡</div><div class="pill-l">Instant</div><div class="pill-v">Live on join</div></div>
+        <div class="pill"><div class="pill-i">🇵🇰</div><div class="pill-l">Origin</div><div class="pill-v">Pakistan</div></div>
       </div>
 
-      <div class="footer-note">
-        <span>›</span>
-        <span>No MetaMask? Install free at <strong style="color:var(--text)">metamask.io</strong> — ask for help in our Discord server.</span>
+      <div class="footer-notice">
+        <span>ℹ️</span>
+        <span>No MetaMask? Install free at <strong style="color:var(--text)">metamask.io</strong> — ask in Discord for help!</span>
       </div>
     </div>
 
-    <!-- ══ PRC PANEL ══ -->
+    <!-- ── PRC PANEL ──────────────────────────── -->
     <div class="panel" id="panel-prc">
 
       <!-- Balance checker -->
-      <div class="balance-checker">
-        <input type="text" id="balName" placeholder="Enter FiveM username to check balance..."/>
-        <button class="btn btn-neon" onclick="checkBalance()">
-          <span id="bSpinner" class="spinner"></span>
-          <span id="bText">SCAN</span>
-        </button>
+      <div class="balance-check">
+        <div class="balance-input-row">
+          <input type="text" id="balName" placeholder="Enter your FiveM username..." autocomplete="off" spellcheck="false"/>
+          <button class="btn btn-yellow" onclick="checkBalance()">
+            <span id="bSpinner" class="spinner"></span>
+            <span id="bText">Check</span>
+          </button>
+        </div>
+        <div id="bStatus" class="status"></div>
       </div>
-      <div id="bStatus" class="status"></div>
 
       <!-- Balance display -->
-      <div class="balance-display" id="balDisplay">
-        <div class="bal-label">// PARADISE COIN BALANCE</div>
+      <div class="balance-hero" id="balHero">
+        <div class="bal-label">Your Paradise Coin Balance</div>
         <div>
-          <span class="bal-number" id="balNum">0.00</span>
-          <span class="bal-symbol">PRC</span>
+          <span class="bal-num" id="balNum">0</span>
+          <span class="bal-sym">PRC</span>
         </div>
         <div class="bal-wallet" id="balWallet"></div>
       </div>
 
-      <!-- Earn ways -->
-      <div class="row-list">
-        <div class="section-hud">⚡ Earn PRC</div>
-        <div class="data-row"><div><div class="row-name">⏱ Playtime Reward</div><div class="row-sub">Every 30 minutes online</div></div><div class="row-val">+10 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🎯 2 Hour Bonus</div><div class="row-sub">Stay online for 2 straight hours</div></div><div class="row-val">+50 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🌅 Daily Login</div><div class="row-sub">First login each day</div></div><div class="row-val">+25 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">👮 Police Duty</div><div class="row-sub">Start a police shift</div></div><div class="row-val">+30 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🔧 Mechanic Duty</div><div class="row-sub">Start mechanic job</div></div><div class="row-val">+15 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🏴 Territory Capture</div><div class="row-sub">Capture a gang territory</div></div><div class="row-val">+100 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🎯 Daily Mission</div><div class="row-sub">Complete daily task</div></div><div class="row-val">+75 PRC</div></div>
+      <!-- How to earn -->
+      <div class="earn-list">
+        <div class="section-title">⚡ How to Earn PRC</div>
+        <div class="earn-item"><div><div class="earn-name">⏱️ Playtime (30 min)</div><div class="earn-desc">Just stay online — auto reward</div></div><div class="earn-amt">+10 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">🎉 2 Hour Bonus</div><div class="earn-desc">Stay online for 2 hours straight</div></div><div class="earn-amt">+50 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">🌅 Daily Login</div><div class="earn-desc">First login each day</div></div><div class="earn-amt">+25 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">👮 Police Shift</div><div class="earn-desc">Start a police duty</div></div><div class="earn-amt">+30 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">🔧 Mechanic Job</div><div class="earn-desc">Start mechanic duty</div></div><div class="earn-amt">+15 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">🏴 Territory Capture</div><div class="earn-desc">Capture a gang territory</div></div><div class="earn-amt">+100 PRC</div></div>
+        <div class="earn-item"><div><div class="earn-name">🎯 Daily Mission</div><div class="earn-desc">Complete daily task</div></div><div class="earn-amt">+75 PRC</div></div>
       </div>
 
       <!-- Shop -->
-      <div class="row-list">
-        <div class="section-hud">🛒 PRC Shop <span style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);font-weight:400;letter-spacing:.05em;">use /prcshop in-game</span></div>
-        <div class="data-row"><div><div class="row-name">⭐ VIP 24 Hours</div><div class="row-sub">Priority queue + exclusive perks</div></div><div class="row-val cost">500 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🚗 Custom Plate</div><div class="row-sub">Set any plate on your vehicle</div></div><div class="row-val cost">300 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">📢 Server Announcement</div><div class="row-sub">Message all online players</div></div><div class="row-val cost">200 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">💼 Double Job Pay 1hr</div><div class="row-sub">2x money from all jobs</div></div><div class="row-val cost">400 PRC</div></div>
-        <div class="data-row"><div><div class="row-name">🎨 Exclusive Vehicle Skin</div><div class="row-sub">Rare skin nobody else has</div></div><div class="row-val cost">1000 PRC</div></div>
+      <div class="shop-list">
+        <div class="section-title">🛒 PRC Shop <span style="font-family:var(--font-mono);font-size:.7rem;color:var(--muted);letter-spacing:.05em;">use /prcshop in-game</span></div>
+        <div class="shop-item"><div><div class="shop-name">⭐ VIP for 24 Hours</div><div class="shop-desc">Priority queue + exclusive perks</div></div><div class="shop-cost">500<span class="shop-prc">PRC</span></div></div>
+        <div class="shop-item"><div><div class="shop-name">🚗 Custom Plate Number</div><div class="shop-desc">Set any plate on your vehicle</div></div><div class="shop-cost">300<span class="shop-prc">PRC</span></div></div>
+        <div class="shop-item"><div><div class="shop-name">📢 Server Announcement</div><div class="shop-desc">Message all players</div></div><div class="shop-cost">200<span class="shop-prc">PRC</span></div></div>
+        <div class="shop-item"><div><div class="shop-name">💼 Double Job Pay (1hr)</div><div class="shop-desc">2x money from all jobs</div></div><div class="shop-cost">400<span class="shop-prc">PRC</span></div></div>
+        <div class="shop-item"><div><div class="shop-name">🎨 Exclusive Vehicle Skin</div><div class="shop-desc">Rare skin no one else has</div></div><div class="shop-cost">1000<span class="shop-prc">PRC</span></div></div>
       </div>
 
-      <!-- Buy Packs -->
-      <div class="section-hud">💳 Buy PRC Packs</div>
-      <div class="card">
-        <div class="card-bracket-tl"></div>
-
-        <div style="margin-bottom:.9rem;">
-          <div class="owner-wallet-label">// SEND POL TO OWNER WALLET</div>
-          <div class="owner-wallet-box" id="ownerWalletBox">Loading...</div>
+      <!-- Buy PRC - ONE CLICK -->
+      <div style="margin-bottom:1.75rem;">
+        <div class="section-title" style="margin-bottom:.5rem;">💳 Buy PRC Packs</div>
+        <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-bottom:1rem;line-height:1.6;">
+          Connect MetaMask → enter username → click Buy → one popup → done. PRC arrives in your wallet instantly.
         </div>
 
-        <div class="pack-grid">
-          <div class="pack-card" id="pack-starter" onclick="selectPack('starter')">
-            <div class="pack-amount">1,000</div>
-            <div class="pack-unit">PRC</div>
-            <div class="pack-price">0.1 POL</div>
-            <div class="pack-name">Starter</div>
-          </div>
-          <div class="pack-card selected" id="pack-pro" onclick="selectPack('pro')">
-            <div class="pack-badge">POPULAR</div>
-            <div class="pack-amount">5,000</div>
-            <div class="pack-unit">PRC</div>
-            <div class="pack-price">0.4 POL</div>
-            <div class="pack-name">Pro</div>
-          </div>
-          <div class="pack-card" id="pack-elite" onclick="selectPack('elite')">
-            <div class="pack-amount">15,000</div>
-            <div class="pack-unit">PRC</div>
-            <div class="pack-price">1.0 POL</div>
-            <div class="pack-name">Elite</div>
-          </div>
+        <!-- FiveM Name input -->
+        <div class="field" style="margin-bottom:1rem;">
+          <label>Your FiveM Username</label>
+          <input type="text" id="buyName" placeholder="ExactUsernameInGame" autocomplete="off" spellcheck="false"/>
         </div>
 
-        <div class="field">
-          <label>FiveM Identity</label>
-          <input type="text" id="buyName" placeholder="Your exact in-game username" autocomplete="off"/>
+        <!-- Pack cards -->
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.65rem;margin-bottom:1rem;" id="packGrid">
+
+          <div class="pack-card" id="pack-starter" onclick="selectPack('starter')" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;">
+            <div style="font-size:1.3rem;margin-bottom:.3rem;">🌱</div>
+            <div style="font-family:var(--font-hero);font-size:1.4rem;color:var(--y1);line-height:1;">1,000</div>
+            <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--muted);margin-bottom:.4rem;">PRC</div>
+            <div style="background:var(--surface2);border-radius:3px;padding:.3rem;margin-top:.4rem;">
+              <div style="font-family:var(--font-hero);font-size:1rem;color:var(--y2);">0.1 POL</div>
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--muted);">~$0.01</div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.5rem;letter-spacing:.05em;">STARTER</div>
+          </div>
+
+          <div class="pack-card" id="pack-pro" onclick="selectPack('pro')" style="background:var(--ydim);border:2px solid var(--y1);border-radius:6px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;position:relative;">
+            <div style="position:absolute;top:-9px;left:50%;transform:translateX(-50%);background:var(--y1);color:#000;font-family:var(--font-mono);font-size:.55rem;font-weight:700;padding:.15rem .5rem;border-radius:2px;white-space:nowrap;">MOST POPULAR</div>
+            <div style="font-size:1.3rem;margin-bottom:.3rem;">⚡</div>
+            <div style="font-family:var(--font-hero);font-size:1.4rem;color:var(--y1);line-height:1;">5,000</div>
+            <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--muted);margin-bottom:.4rem;">PRC</div>
+            <div style="background:var(--surface2);border-radius:3px;padding:.3rem;margin-top:.4rem;">
+              <div style="font-family:var(--font-hero);font-size:1rem;color:var(--y2);">0.4 POL</div>
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--muted);">~$0.04</div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--y1);margin-top:.5rem;letter-spacing:.05em;">PRO</div>
+          </div>
+
+          <div class="pack-card" id="pack-elite" onclick="selectPack('elite')" style="background:var(--bg);border:1px solid var(--border2);border-radius:6px;padding:1rem;text-align:center;cursor:pointer;transition:all .2s;">
+            <div style="font-size:1.3rem;margin-bottom:.3rem;">👑</div>
+            <div style="font-family:var(--font-hero);font-size:1.4rem;color:var(--y1);line-height:1;">15,000</div>
+            <div style="font-family:var(--font-mono);font-size:.58rem;color:var(--muted);margin-bottom:.4rem;">PRC</div>
+            <div style="background:var(--surface2);border-radius:3px;padding:.3rem;margin-top:.4rem;">
+              <div style="font-family:var(--font-hero);font-size:1rem;color:var(--y2);">1.0 POL</div>
+              <div style="font-family:var(--font-mono);font-size:.55rem;color:var(--muted);">~$0.10</div>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:.6rem;color:var(--muted);margin-top:.5rem;letter-spacing:.05em;">ELITE</div>
+          </div>
+
         </div>
-        <div class="field" style="margin-bottom:.9rem;">
-          <label>Transaction Hash</label>
-          <input type="text" id="buyTx" placeholder="0x... (paste after sending POL)" autocomplete="off"/>
-        </div>
-        <button class="btn btn-neon" id="buyBtn" onclick="verifyPurchase()">
+
+        <!-- Buy button -->
+        <button class="btn btn-yellow" id="buyBtn" onclick="buyPRC()">
           <span id="buySpinner" class="spinner"></span>
-          <span id="buyText">◈ Verify & Receive PRC</span>
+          <span id="buyText">⚡ Buy Pro Pack — 0.4 POL</span>
         </button>
         <div id="buyStatus" class="status"></div>
+
+        <div style="font-family:var(--font-mono);font-size:.65rem;color:var(--muted);margin-top:.75rem;text-align:center;line-height:1.5;">
+          🔒 Payment goes directly to server owner wallet on Polygon blockchain.<br>PRC arrives in your wallet within seconds.
+        </div>
       </div>
 
       <!-- Commands -->
-      <div class="section-hud" style="margin-bottom:.75rem;">🎮 Commands</div>
-      <div class="cmd-grid-2" style="margin-bottom:1.25rem;">
-        <div class="cmd-chip"><div class="cmd-chip-name">/prc</div><div class="cmd-chip-desc">Check PRC balance</div></div>
-        <div class="cmd-chip"><div class="cmd-chip-name">/prcshop</div><div class="cmd-chip-desc">Open PRC shop</div></div>
-        <div class="cmd-chip"><div class="cmd-chip-name">/prcbalance</div><div class="cmd-chip-desc">Detailed balance</div></div>
-        <div class="cmd-chip"><div class="cmd-chip-name">/prcbuy [item]</div><div class="cmd-chip-desc">Buy shop item</div></div>
+      <div class="section-title" style="margin-bottom:.75rem;">🎮 In-Game Commands</div>
+      <div class="cmd-grid">
+        <div class="cmd-box"><div class="cmd-name">/prc</div><div class="cmd-desc">Check PRC balance</div></div>
+        <div class="cmd-box"><div class="cmd-name">/prcshop</div><div class="cmd-desc">Open PRC shop</div></div>
+        <div class="cmd-box"><div class="cmd-name">/prcbalance</div><div class="cmd-desc">Same as /prc</div></div>
+        <div class="cmd-box"><div class="cmd-name">/prcreward</div><div class="cmd-desc">Admin: reward player</div></div>
       </div>
 
-      <div class="footer-note">
-        <span>›</span>
-        <span>PRC runs on <strong style="color:var(--text)">Polygon blockchain</strong>. Link your wallet in the ⬡ tab to start earning. All tokens go directly to your MetaMask wallet.</span>
+      <div class="footer-notice" style="margin-top:1.5rem;">
+        <span>ℹ️</span>
+        <span>PRC runs on <strong style="color:var(--text)">Polygon blockchain</strong>. Link your wallet in the 🔗 tab to start earning. Coins go directly to your MetaMask.</span>
       </div>
     </div>
 
@@ -948,241 +513,146 @@
     const API_URL     = 'https://paradise-rp-backend-production.up.railway.app';
     const SERVER_NAME = 'Paradise Roleplay';
     let wallet = null;
-    let selectedPack = 'pro';
 
-    // ── Tab switch ────────────────────────────
+    // ── Tab switching ─────────────────────────
     function switchTab(tab) {
-      document.querySelectorAll('.tab-btn').forEach((b,i)=>b.classList.toggle('active',(i===0&&tab==='wallet')||(i===1&&tab==='prc')));
+      document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='wallet')||(i===1&&tab==='prc')));
       document.getElementById('panel-wallet').classList.toggle('active', tab==='wallet');
       document.getElementById('panel-prc').classList.toggle('active', tab==='prc');
     }
 
     // ── Connect Wallet ────────────────────────
     async function connectWallet() {
-      if (!window.ethereum) { showStatus('wStatus','error','MetaMask not detected. Install from metamask.io and refresh.'); return; }
+      if (!window.ethereum) {
+        showWStatus('error','🦊 MetaMask not found! Install from metamask.io then refresh.');
+        return;
+      }
       setBusy('c',true);
       try {
         const accounts = await window.ethereum.request({method:'eth_requestAccounts'});
         wallet = accounts[0];
         document.getElementById('wLbl').style.display='block';
         document.getElementById('wBox').style.display='block';
-        document.getElementById('wBox').textContent = wallet;
+        document.getElementById('wBox').textContent=wallet;
         document.getElementById('connectBtn').style.display='none';
         document.getElementById('fivemName').disabled=false;
         document.getElementById('fivemName').focus();
         setStep(2);
-        showStatus('wStatus','info','// Wallet authenticated. Enter your FiveM identity below.');
+        showWStatus('info','✅ Wallet connected! Enter your FiveM username below.');
       } catch(e) {
-        showStatus('wStatus','error', e.message||'Connection failed.');
+        showWStatus('error','❌ '+(e.message||'Could not connect.'));
       } finally { setBusy('c',false); }
     }
 
     document.getElementById('fivemName').addEventListener('input',function(){
-      const ok = this.value.trim().length >= 2;
-      document.getElementById('linkBtn').disabled = !ok;
-      setStep(ok ? 3 : 2);
+      const ok=this.value.trim().length>=2;
+      document.getElementById('linkBtn').disabled=!ok;
+      setStep(ok?3:2);
     });
 
     // ── Link Wallet ───────────────────────────
     async function linkWallet() {
-      const name = document.getElementById('fivemName').value.trim();
-      if (!wallet || name.length < 2) return;
+      const name=document.getElementById('fivemName').value.trim();
+      if(!wallet||name.length<2) return;
       setBusy('l',true);
-      document.getElementById('lText').textContent = '// Awaiting signature...';
+      document.getElementById('lText').textContent='Waiting for signature...';
       try {
-        const msg = `Link wallet to ${SERVER_NAME} FiveM account: ${name}`;
-        const sig = await window.ethereum.request({method:'personal_sign', params:[msg,wallet]});
-        document.getElementById('lText').textContent = '// Deploying link...';
-        const res = await fetch(`${API_URL}/link-wallet`,{
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({fivemName:name,walletAddress:wallet,signature:sig})
+        const msg=`Link wallet to ${SERVER_NAME} FiveM account: ${name}`;
+        const sig=await window.ethereum.request({method:'personal_sign',params:[msg,wallet]});
+        document.getElementById('lText').textContent='Linking...';
+        const res=await fetch(`${API_URL}/link-wallet`,{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({fivemName:name,walletAddress:wallet,signature:sig})
         });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          document.getElementById('formSection').style.display='none';
+        const data=await res.json();
+        if(res.ok&&data.success){
+          document.getElementById('form-section').style.display='none';
           document.getElementById('successScreen').style.display='block';
           document.getElementById('c1').classList.add('done');
           document.getElementById('c2').classList.add('done');
           setStep(3,true);
         } else {
-          showStatus('wStatus','error', data.error||'Link failed. Try again.');
+          showWStatus('error','❌ '+(data.error||'Linking failed.'));
         }
       } catch(e) {
-        showStatus('wStatus','error', e.code===4001 ? 'Signature rejected. Must sign to verify ownership.' : e.message||'Error occurred.');
+        showWStatus('error',e.code===4001?'❌ Signature rejected.':'❌ '+(e.message||'Error occurred.'));
       } finally {
         setBusy('l',false);
-        document.getElementById('lText').textContent='◈ Link Wallet to Paradise RP';
-      }
-    }
-
-    // ── Unlink ────────────────────────────────
-    function toggleUnlink() {
-      const sec = document.getElementById('unlinkSection');
-      sec.style.display = sec.style.display==='none' ? 'block' : 'none';
-    }
-
-    async function unlinkWallet() {
-      const name = document.getElementById('unlinkName').value.trim();
-      if (!wallet || !name) { showStatus('ulStatus','error','Enter your FiveM username.'); return; }
-      document.getElementById('ulBtn').disabled=true;
-      document.getElementById('ulSpinner').style.display='block';
-      document.getElementById('ulText').textContent='Signing...';
-      try {
-        const msg = `Unlink wallet from ${SERVER_NAME} FiveM account: ${name}`;
-        const sig = await window.ethereum.request({method:'personal_sign',params:[msg,wallet]});
-        const res = await fetch(`${API_URL}/unlink-wallet`,{
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({fivemName:name,walletAddress:wallet,signature:sig})
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          showStatus('ulStatus','success','Wallet unlinked. You can re-link anytime.');
-          setTimeout(()=>resetForm(),2000);
-        } else {
-          showStatus('ulStatus','error', data.error||'Unlink failed.');
-        }
-      } catch(e) {
-        showStatus('ulStatus','error', e.message||'Error.');
-      } finally {
-        document.getElementById('ulSpinner').style.display='none';
-        document.getElementById('ulText').textContent='Confirm Unlink';
-        document.getElementById('ulBtn').disabled=false;
+        document.getElementById('lText').textContent='Link Wallet to Paradise RP';
       }
     }
 
     // ── Check Balance ─────────────────────────
     async function checkBalance() {
-      const name = document.getElementById('balName').value.trim();
-      if (!name) { showStatus('bStatus','error','Enter a FiveM username.'); return; }
+      const name=document.getElementById('balName').value.trim();
+      if(!name){showBStatus('error','Enter your FiveM username.');return;}
       document.getElementById('bSpinner').style.display='block';
-      document.getElementById('bText').textContent='...';
-      document.querySelector('#panel-prc .balance-checker .btn').disabled=true;
+      document.getElementById('bText').textContent='Checking...';
+      document.querySelector('#panel-prc .btn').disabled=true;
       try {
-        const res = await fetch(`${API_URL}/public/prc-balance/${encodeURIComponent(name.toLowerCase())}`);
-        const data = await res.json();
-        if (res.ok) {
-          if (!data.hasWallet) {
-            showStatus('bStatus','error',`No wallet linked for "${name}". Go to ⬡ Link Wallet tab first.`);
-            document.getElementById('balDisplay').style.display='none';
+        const res=await fetch(`${API_URL}/public/prc-balance/${encodeURIComponent(name.toLowerCase())}`);
+        const data=await res.json();
+        if(res.ok){
+          if(!data.hasWallet){
+            showBStatus('error','❌ No wallet linked for "'+name+'". Go to the 🔗 Link Wallet tab first!');
+            document.getElementById('balHero').style.display='none';
           } else {
-            document.getElementById('balDisplay').style.display='block';
-            document.getElementById('balNum').textContent = parseFloat(data.balance).toFixed(2);
-            document.getElementById('balWallet').textContent = '// ' + data.wallet;
-            showStatus('bStatus','success',`// Identity verified: ${name}`);
+            document.getElementById('balHero').style.display='block';
+            document.getElementById('balNum').textContent=parseFloat(data.balance).toFixed(2);
+            document.getElementById('balWallet').textContent='💳 '+data.wallet;
+            showBStatus('success','✅ Balance loaded for '+name);
           }
         } else {
-          showStatus('bStatus','error', data.error||'Lookup failed.');
+          showBStatus('error','❌ '+(data.error||'Error loading balance.'));
         }
       } catch(e) {
-        showStatus('bStatus','error','Cannot reach server. Try again.');
+        showBStatus('error','❌ Cannot connect to server. Try again.');
       } finally {
         document.getElementById('bSpinner').style.display='none';
-        document.getElementById('bText').textContent='SCAN';
-        document.querySelector('#panel-prc .balance-checker .btn').disabled=false;
+        document.getElementById('bText').textContent='Check';
+        document.querySelector('#panel-prc .btn').disabled=false;
       }
     }
 
-    document.getElementById('balName').addEventListener('keypress',e=>{ if(e.key==='Enter') checkBalance(); });
-
-    // ── Pack selection ────────────────────────
-    function selectPack(p) {
-      selectedPack = p;
-      ['starter','pro','elite'].forEach(id=>{
-        document.getElementById('pack-'+id).classList.toggle('selected', id===p);
-      });
-    }
-
-    // ── Verify Purchase ───────────────────────
-    async function verifyPurchase() {
-      const name = document.getElementById('buyName').value.trim();
-      const txHash = document.getElementById('buyTx').value.trim();
-      if (!name || !txHash) { showStatus('buyStatus','error','Enter your FiveM username and transaction hash.'); return; }
-      if (!txHash.startsWith('0x')) { showStatus('buyStatus','error','Transaction hash must start with 0x'); return; }
-      document.getElementById('buyBtn').disabled=true;
-      document.getElementById('buySpinner').style.display='block';
-      document.getElementById('buyText').textContent='Verifying on-chain...';
-      try {
-        const res = await fetch(`${API_URL}/verify-purchase`,{
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({fivemName:name,packId:selectedPack,txHash})
-        });
-        const data = await res.json();
-        if (res.ok && data.success) {
-          showStatus('buyStatus','success',`// ${data.prcAwarded} PRC deployed to your wallet. Type /prc in-game to verify.`);
-          document.getElementById('buyTx').value='';
-        } else {
-          showStatus('buyStatus','error', data.error||'Verification failed.');
-        }
-      } catch(e) {
-        showStatus('buyStatus','error','Cannot reach server.');
-      } finally {
-        document.getElementById('buyBtn').disabled=false;
-        document.getElementById('buySpinner').style.display='none';
-        document.getElementById('buyText').textContent='◈ Verify & Receive PRC';
-      }
-    }
-
-    // ── Load owner wallet ─────────────────────
-    async function loadOwnerWallet() {
-      try {
-        const res = await fetch(`${API_URL}/owner-wallet`);
-        const data = await res.json();
-        if (data.wallet) document.getElementById('ownerWalletBox').textContent = data.wallet;
-      } catch(e) { document.getElementById('ownerWalletBox').textContent = 'Contact admin for wallet address'; }
-    }
-    loadOwnerWallet();
+    document.getElementById('balName').addEventListener('keypress',function(e){if(e.key==='Enter')checkBalance();});
 
     // ── Helpers ───────────────────────────────
-    function showStatus(id, type, msg) {
-      const el = document.getElementById(id);
-      el.className = 'status '+type;
-      el.textContent = msg;
-      el.style.display = 'block';
+    function showWStatus(type,msg){const el=document.getElementById('wStatusMsg');el.className='status '+type;el.textContent=msg;}
+    function showBStatus(type,msg){const el=document.getElementById('bStatus');el.className='status '+type;el.textContent=msg;}
+    function showBuyStatus(type,msg){const el=document.getElementById('buyStatus');el.className='status '+type;el.textContent=msg;el.style.display='block';}
+
+    function setBusy(w,on){
+      if(w==='c'){document.getElementById('connectBtn').disabled=on;document.getElementById('cSpinner').style.display=on?'block':'none';document.getElementById('cText').textContent=on?'Connecting...':'🦊 Connect MetaMask';}
+      else{document.getElementById('linkBtn').disabled=on;document.getElementById('lSpinner').style.display=on?'block':'none';}
     }
 
-    function setBusy(w, on) {
-      if (w==='c') {
-        document.getElementById('connectBtn').disabled=on;
-        document.getElementById('cSpinner').style.display=on?'block':'none';
-        document.getElementById('cText').textContent=on?'// Connecting...':'⬡ Connect MetaMask';
-      } else {
-        document.getElementById('linkBtn').disabled=on;
-        document.getElementById('lSpinner').style.display=on?'block':'none';
-      }
+    function setStep(n,allDone=false){
+      for(let i=1;i<=3;i++){const el=document.getElementById('s'+i);el.classList.remove('active','done');if(allDone||i<n)el.classList.add('done');else if(i===n)el.classList.add('active');}
     }
 
-    function setStep(n, allDone=false) {
-      for (let i=1;i<=3;i++) {
-        const el = document.getElementById('s'+i);
-        el.classList.remove('active','done');
-        if (allDone||i<n) el.classList.add('done');
-        else if (i===n) el.classList.add('active');
-      }
-    }
-
-    function resetForm() {
+    function resetForm(){
       wallet=null;
-      document.getElementById('formSection').style.display='block';
+      document.getElementById('form-section').style.display='block';
       document.getElementById('successScreen').style.display='none';
-      document.getElementById('unlinkSection').style.display='none';
       document.getElementById('wLbl').style.display='none';
       document.getElementById('wBox').style.display='none';
       document.getElementById('connectBtn').style.display='flex';
       document.getElementById('fivemName').value='';
       document.getElementById('fivemName').disabled=true;
       document.getElementById('linkBtn').disabled=true;
-      document.getElementById('wStatus').className='status';
+      document.getElementById('wStatusMsg').className='status';
       document.getElementById('c1').classList.remove('done');
       document.getElementById('c2').classList.remove('done');
       setStep(1);
     }
 
-    // Auto-detect wallet
-    window.addEventListener('load', async()=>{
-      if (window.ethereum) {
-        try {
-          const accounts = await window.ethereum.request({method:'eth_accounts'});
-          if (accounts.length>0) {
+    // Auto detect connected wallet
+    window.addEventListener('load',async()=>{
+      if(window.ethereum){
+        try{
+          const accounts=await window.ethereum.request({method:'eth_accounts'});
+          if(accounts.length>0){
             wallet=accounts[0];
             document.getElementById('wLbl').style.display='block';
             document.getElementById('wBox').style.display='block';
@@ -1191,9 +661,190 @@
             document.getElementById('fivemName').disabled=false;
             setStep(2);
           }
-        } catch(e){}
+        }catch(e){}
       }
     });
+
+    // ── Unlink Wallet ─────────────────────────
+    function showUnlink(){
+      document.getElementById('unlinkSection').style.display='block';
+    }
+
+    async function unlinkWallet(){
+      const name=document.getElementById('unlinkName').value.trim();
+      if(!wallet||!name){
+        document.getElementById('ulStatus').className='status error';
+        document.getElementById('ulStatus').textContent='Enter your FiveM username.';
+        document.getElementById('ulStatus').style.display='block';
+        return;
+      }
+      document.getElementById('ulBtn').disabled=true;
+      document.getElementById('ulSpinner').style.display='block';
+      document.getElementById('ulText').textContent='Signing...';
+      try{
+        const msg=`Unlink wallet from Paradise Roleplay FiveM account: ${name}`;
+        const sig=await window.ethereum.request({method:'personal_sign',params:[msg,wallet]});
+        document.getElementById('ulText').textContent='Unlinking...';
+        const res=await fetch(`${API_URL}/unlink-wallet`,{
+          method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({fivemName:name,walletAddress:wallet,signature:sig})
+        });
+        const data=await res.json();
+        if(res.ok&&data.success){
+          document.getElementById('ulStatus').className='status success';
+          document.getElementById('ulStatus').textContent='✅ Wallet unlinked successfully!';
+          document.getElementById('ulStatus').style.display='block';
+          setTimeout(()=>resetForm(),2000);
+        }else{
+          document.getElementById('ulStatus').className='status error';
+          document.getElementById('ulStatus').textContent='❌ '+(data.error||'Unlink failed.');
+          document.getElementById('ulStatus').style.display='block';
+        }
+      }catch(e){
+        document.getElementById('ulStatus').className='status error';
+        document.getElementById('ulStatus').textContent='❌ '+(e.message||'Error.');
+        document.getElementById('ulStatus').style.display='block';
+      }finally{
+        document.getElementById('ulBtn').disabled=false;
+        document.getElementById('ulSpinner').style.display='none';
+        document.getElementById('ulText').textContent='Confirm Unlink';
+      }
+    }
+
+    // ── ONE CLICK BUY PRC ─────────────────────
+    // Owner wallet — POL payments go here directly
+    const OWNER_WALLET = '0xFebe63e5db27047368e1c31D2E5c1897f45A73B';
+
+    const PACKS = {
+      starter: { prc: 1000,  pol: '0.1',  label: 'Starter Pack — 1,000 PRC' },
+      pro:     { prc: 5000,  pol: '0.4',  label: 'Pro Pack — 5,000 PRC' },
+      elite:   { prc: 15000, pol: '1.0',  label: 'Elite Pack — 15,000 PRC' },
+    };
+
+    let selectedPack = 'pro';
+
+    function selectPack(packId) {
+      selectedPack = packId;
+      // Update card borders
+      Object.keys(PACKS).forEach(p => {
+        const el = document.getElementById('pack-'+p);
+        if(!el) return;
+        if(p === packId) {
+          el.style.border = '2px solid var(--y1)';
+          el.style.background = 'var(--ydim)';
+        } else {
+          el.style.border = '1px solid var(--border2)';
+          el.style.background = 'var(--bg)';
+        }
+      });
+      // Update button text
+      const pack = PACKS[packId];
+      document.getElementById('buyText').textContent = '⚡ Buy ' + pack.label.split(' — ')[0] + ' — ' + pack.pol + ' POL';
+    }
+
+    async function buyPRC() {
+      const fivemName = document.getElementById('buyName').value.trim();
+      if(!fivemName) {
+        showBuyStatus('error', '❌ Enter your FiveM username first!');
+        return;
+      }
+
+      // Check MetaMask
+      if(!window.ethereum) {
+        showBuyStatus('error', '❌ MetaMask required! Install from metamask.io');
+        return;
+      }
+
+      const pack = PACKS[selectedPack];
+
+      // Connect wallet if not connected
+      let buyerWallet;
+      try {
+        const accounts = await window.ethereum.request({method:'eth_requestAccounts'});
+        buyerWallet = accounts[0];
+      } catch(e) {
+        showBuyStatus('error', '❌ Please connect MetaMask first.');
+        return;
+      }
+
+      document.getElementById('buyBtn').disabled = true;
+      document.getElementById('buySpinner').style.display = 'block';
+      document.getElementById('buyText').textContent = 'Waiting for MetaMask...';
+      showBuyStatus('info', '🦊 MetaMask is opening... Confirm the payment popup.');
+
+      try {
+        // Convert POL amount to hex wei
+        const polAmount = parseFloat(pack.pol);
+        const weiAmount = BigInt(Math.floor(polAmount * 1e18));
+        const hexAmount = '0x' + weiAmount.toString(16);
+
+        // Send POL directly to owner wallet — MetaMask opens automatically
+        const txHash = await window.ethereum.request({
+          method: 'eth_sendTransaction',
+          params: [{
+            from: buyerWallet,
+            to: OWNER_WALLET,
+            value: hexAmount,
+            gas: '0x5208', // 21000 gas for simple transfer
+          }]
+        });
+
+        showBuyStatus('info', '⏳ Payment sent! Waiting for confirmation... (10-30 seconds)');
+        document.getElementById('buyText').textContent = 'Confirming payment...';
+
+        // Wait for confirmation then verify with backend
+        await waitAndVerify(fivemName, selectedPack, txHash, buyerWallet);
+
+      } catch(e) {
+        if(e.code === 4001) {
+          showBuyStatus('error', '❌ Payment cancelled. Click Buy again when ready.');
+        } else if(e.message && e.message.includes('insufficient funds')) {
+          showBuyStatus('error', '❌ Not enough POL! You need ' + pack.pol + ' POL + small gas fee.');
+        } else {
+          showBuyStatus('error', '❌ ' + (e.message || 'Transaction failed.'));
+        }
+      } finally {
+        document.getElementById('buyBtn').disabled = false;
+        document.getElementById('buySpinner').style.display = 'none';
+        selectPack(selectedPack); // restore button text
+      }
+    }
+
+    async function waitAndVerify(fivemName, packId, txHash, buyerWallet) {
+      // Poll backend every 3 seconds for up to 60 seconds
+      const maxAttempts = 20;
+      for(let i = 0; i < maxAttempts; i++) {
+        await new Promise(r => setTimeout(r, 3000));
+        try {
+          const res = await fetch(`${API_URL}/verify-purchase`, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({fivemName, packId, txHash, buyerWallet})
+          });
+          const data = await res.json();
+
+          if(res.ok && data.success) {
+            showBuyStatus('success',
+              '🎉 Success! ' + data.prcAwarded.toLocaleString() + ' PRC added to your wallet! Type /prc in-game to check.'
+            );
+            document.getElementById('buyName').value = '';
+            return;
+          } else if(data.pending) {
+            // Still confirming on blockchain
+            showBuyStatus('info', '⏳ Still confirming... (' + (i+1) + '/'+maxAttempts+')');
+            continue;
+          } else {
+            showBuyStatus('error', '❌ ' + (data.error || 'Verification failed. Contact admin with TX: ' + txHash));
+            return;
+          }
+        } catch(e) {
+          // Network error, keep trying
+        }
+      }
+      showBuyStatus('error', '⚠️ Timeout. Your payment was sent but PRC not confirmed yet. Save TX hash: ' + txHash + ' — contact admin on Discord.');
+    }
+
+  
   </script>
 </body>
 </html>
